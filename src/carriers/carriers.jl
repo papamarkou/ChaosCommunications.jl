@@ -1,0 +1,3 @@
+abstract RandomProcessCarrier
+abstract QuasiRandomCarrier
+typealias Carrier Union(Distribution, RandomProcessCarrier, QuasiRandomCarrier)
