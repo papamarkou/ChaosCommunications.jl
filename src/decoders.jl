@@ -9,11 +9,21 @@ abstract RandomDecoder <: Decoder
 type CorDecoder <: DeterministicDecoder
 end
 
-type MCMLDecoder <: QuasiRandomDecoder
-  likelihood::Function
-  maximize::Function
-  optimizer::Dict
-  nmc::Int
+abstract MCMLDecoder <: QuasiRandomDecoder
+
+immutable UTURUniChannelCSKMCMLDecoder <: MCMLDecoder
+  carrier::Carrier
+  nmc::Int64
+end
+
+mcmltypes = (:UTURUniChannelCSK,)
+
+function mcml_decoder(; system::Symbol=:UTURUniChannelCSK, args...)
+  @assert in(system, mcmltypes) "MCML decoder not defined for $system"
+
+  if system == :UTURUniChannelCSK
+    UTURUniChannelCSKMCMLDecoder(snr; args...)
+  end
 end
 
 function decode{T<:Real}(d::CorDecoder, x::Vector{T}, y::Vector{T})

@@ -1,9 +1,9 @@
 module ChaosCommunications
 
 using Distributions
-# using NumericExtensions
 using StatsBase
 
+import Distributions.log2π
 import StatsBase.RealVector
 
 export
@@ -50,6 +50,7 @@ export
   logistic,
   snr2var,
   var2snr,
+  mcml_decoder,
   decode,
   sim_sys,
   sim_ber,
