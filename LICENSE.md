@@ -20,3 +20,7 @@ The ChaosCommunications.jl package is licensed under the MIT "Expat" License:
 > CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 > TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 > SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+See the NLopt package for the copyright and licensing information of
+[NLopt package](http://ab-initio.mit.edu/nlopt) itself,
+which is under the [GNU LGPL](http://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License).

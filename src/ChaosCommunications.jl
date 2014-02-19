@@ -2,13 +2,14 @@ module ChaosCommunications
 
 using Distributions
 using StatsBase
+using NLopt
 
 import Base.mean
 import Distributions.log2π
 import StatsBase.RealVector
 
 export
-  #types
+  # Types
   InfoForm,
   Classical,
   Quantum,
@@ -46,7 +47,7 @@ export
   CorDecoder,
   MCMLDecoder,
 
-  # functions
+  # Functions
   initialize,
   logistic,
   snr2var,

@@ -1,4 +1,4 @@
-examples = ["csk_example"]
+examples = ["coherent_csk_example"]
 
 println("Running tests:")
 

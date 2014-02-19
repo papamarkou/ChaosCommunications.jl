@@ -35,13 +35,14 @@ function uturunichannelcsk_var2snr(v::Float64; carrier::Carrier=LogisticCarrier(
   10.0*log10(var(carrier.pdf)/v)
 end
 
-#channel_var_estimator(d::UTURUniChannelCSKMCMLDecoder, tsum::Float64) = 0.5*tsum/d.carrier.len
-#channel_var_estimator(d::UTURUniChannelCSKMCMLDecoder, t::Vector{Float64}) = channel_var_estimator(d, sum(t))
+function logmcml(d::UTURUniChannelCSKMCMLDecoder, v::Float64, t::Vector{Float64})
+  log(sum(exp(-0.5*t/v)))-d.carrier.len*(log(v)+log2π)-log(d.nmc)
+end
 
-#function logmcml(d::UTURUniChannelCSKMCMLDecoder, bit::Int, v::Float64, tsum::Float64)
-#  -0.5*tsum/v-d.carrier.len*(log(v)+log2π)-log(d.nmc)
-#end
-#logmcml(d::UTURUniChannelCSKMCMLDecoder, bit::Int, v::Float64, t::Vector{Float64}) = logmcml(d, bit, v, r1, r2, sum(t))
+function gradlogmcml(d::UTURUniChannelCSKMCMLDecoder, v::Float64, t::Vector{Float64})
+  expterms = exp(-0.5*t/v)
+  (0.5*dot(t, expterms)/(sum(expterms)*v)-d.carrier.len)/v
+end
 
 function decode(d::UTURUniChannelCSKMCMLDecoder, r1::Vector{Float64}, r2::Vector{Float64})
   tp1, tm1 = Array(Float64, d.nmc), Array(Float64, d.nmc)
@@ -54,7 +55,34 @@ function decode(d::UTURUniChannelCSKMCMLDecoder, r1::Vector{Float64}, r2::Vector
     tm1[i] = dot(r1+x, r1+x)+dot(r2-x, r2-x)    
   end
 
-  dec = -d.carrier.len*log(sum(tp1)/sum(tm1))
+  function objective_fp1(v::Vector{Float64}, grad::Vector{Float64})
+    if length(grad) > 0
+      grad[1] = gradlogmcml(d, v[1], tp1)
+    end
+    logmcml(d, v[1], tp1)
+  end
+  max_objective!(d.opt, objective_fp1)
+  (maxfp1, maxxp1, retp1) = optimize(d.opt, [d.init[1]])
+
+  if in(retp1, opt_failure)
+    return -3
+  end
+
+  function objective_fm1(v::Vector{Float64}, grad::Vector{Float64})
+    if length(grad) > 0
+      grad[1] = gradlogmcml(d, v[1], tm1)
+    end
+    logmcml(d, v[1], tm1)
+  end
+  max_objective!(d.opt, objective_fm1)
+  (maxfm1, maxxm1, retm1) = optimize(d.opt, [d.init[2]])
+
+  if in(retm1, opt_failure)
+    return -3
+  end
+
+  dec = maxfp1-maxfm1
+
   if dec > 0
     return 1
   elseif dec < 0
