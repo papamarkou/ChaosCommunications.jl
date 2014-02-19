@@ -16,13 +16,16 @@ immutable UTURUniChannelCSKMCMLDecoder <: MCMLDecoder
   nmc::Int64
 end
 
+UTURUniChannelCSKMCMLDecoder(; carrier::Carrier=LogisticCarrier(5), nmc::Int64=50) =
+  UTURUniChannelCSKMCMLDecoder(carrier, nmc)
+
 mcmltypes = (:UTURUniChannelCSK,)
 
 function mcml_decoder(; system::Symbol=:UTURUniChannelCSK, args...)
   @assert in(system, mcmltypes) "MCML decoder not defined for $system"
 
   if system == :UTURUniChannelCSK
-    UTURUniChannelCSKMCMLDecoder(snr; args...)
+    UTURUniChannelCSKMCMLDecoder(; args...)
   end
 end
 

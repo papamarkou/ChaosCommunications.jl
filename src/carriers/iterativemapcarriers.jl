@@ -18,6 +18,8 @@ end
 
 generate(c::IterativeMapCarrier) = generate!(c, Array(Real, c.len))
 
+mean(c::IterativeMapCarrier) = mean(c.pdf)
+
 LogisticCarrier(len::Int) = IterativeMapCarrier(logistic, Beta(0.5, 0.5), len) 
 
 function logistic(x::Float64)

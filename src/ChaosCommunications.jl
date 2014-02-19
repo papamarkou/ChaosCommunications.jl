@@ -3,6 +3,7 @@ module ChaosCommunications
 using Distributions
 using StatsBase
 
+import Base.mean
 import Distributions.log2π
 import StatsBase.RealVector
 
