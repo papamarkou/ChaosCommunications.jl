@@ -51,8 +51,9 @@ function decode(d::UTURUniChannelCSKMCMLDecoder, r1::Vector{Float64}, r2::Vector
   for i = 1:d.nmc
     generate!(d.carrier, x)
     x = x-mean(d.carrier)
-    tp1[i] = dot(r1-x, r1-x)+dot(r2-x, r2-x)
-    tm1[i] = dot(r1+x, r1+x)+dot(r2-x, r2-x)    
+    dotr2 = dot(r2-x, r2-x)
+    tp1[i] = dot(r1-x, r1-x)+dotr2
+    tm1[i] = dot(r1+x, r1+x)+dotr2 
   end
 
   function objective_fp1(v::Vector{Float64}, grad::Vector{Float64})
@@ -61,8 +62,8 @@ function decode(d::UTURUniChannelCSKMCMLDecoder, r1::Vector{Float64}, r2::Vector
     end
     logmcml(d, v[1], tp1)
   end
-  max_objective!(d.opt, objective_fp1)
-  (maxfp1, maxxp1, retp1) = optimize(d.opt, [d.init[1]])
+  max_objective!(d.opt[1], objective_fp1)
+  (maxfp1, maxxp1, retp1) = optimize(d.opt[1], [d.init[1]])
 
   if in(retp1, opt_failure)
     return -3
@@ -74,8 +75,8 @@ function decode(d::UTURUniChannelCSKMCMLDecoder, r1::Vector{Float64}, r2::Vector
     end
     logmcml(d, v[1], tm1)
   end
-  max_objective!(d.opt, objective_fm1)
-  (maxfm1, maxxm1, retm1) = optimize(d.opt, [d.init[2]])
+  max_objective!(d.opt[2], objective_fm1)
+  (maxfm1, maxxm1, retm1) = optimize(d.opt[2], [d.init[2]])
 
   if in(retm1, opt_failure)
     return -3
@@ -101,32 +102,4 @@ function sim_sys(s::UTURUniChannelCSK, bit::Int)
   r1 = bit*x+rand(s.noise, s.carrier.len)
   r2 = s.coherent ? x : x+rand(s.noise, s.carrier.len)
   decode(s.decoder, r1, r2)
-end
-
-function sim_ber(s::UTURUniChannelCSK, bit::Int, n::Int64)
-  estimation_errors::Int64 = 0
-  decoding_failures::Int64 = 0
-
-  for i = 1:n
-    bit_estimate = sim_sys(s, bit)
-    if in(bit_estimate, [-1, 1])
-      if bit_estimate != bit
-        estimation_errors += 1
-      end
-    else
-      decoding_failures += 1
-    end
-  end
-
-  estimation_errors, decoding_failures
-end
-
-function psim_ber(s::UTURUniChannelCSK, bit::Int, n::Int64)
-  decoding_failures, estimation_errors =
-  (@parallel (+) for i = 1:n
-    bit_estimate = sim_sys(s, bit)
-    in(bit_estimate, [-1, 1]) ? (bit_estimate == bit ? [0, 0]: [0, 1]) : [1, 0]
-  end)
-
-  estimation_errors, decoding_failures
 end

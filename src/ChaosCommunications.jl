@@ -40,6 +40,7 @@ export
   QuasiRandomCarrier,
   IterativeMapCarrier,
   LogisticCarrier,
+  BernoulliCarrier,
   Decoder,
   DeterministicDecoder,
   QuasiRandomDecoder,
@@ -49,7 +50,7 @@ export
 
   # Functions
   initialize,
-  logistic,
+  iterate,
   snr2var,
   var2snr,
   mcml_decoder,
@@ -78,7 +79,7 @@ abstract ChannelForm
 type UniChannel <: ChannelForm end
 type MultiChannel <:ChannelForm end
 
-abstract System{Info<:InfoForm, I<:InteractionForm, C<:ChannelForm} #D stands for directionality
+abstract System{Info<:InfoForm, I<:InteractionForm, C<:ChannelForm}
 
 typealias ClassicalSystem{I<:InteractionForm, C<:ChannelForm} System{Classical, I, C}
 typealias QuantumSystem{I<:InteractionForm, C<:ChannelForm} System{Quantum, I, C}
@@ -96,9 +97,10 @@ type MinMaxError <: Exception
 end
 
 include(joinpath("carriers", "carriers.jl"))
-include(joinpath("carriers", "iterativemapcarriers.jl"))
-include("decoders.jl")
-# include(joinpath("decoders", "mcmldecoders.jl"))
+include(joinpath("carriers", "iterative_map_carriers.jl"))
+include(joinpath("decoders", "decoders.jl"))
+include(joinpath("decoders", "mcml_decoders.jl"))
 include("noise.jl")
-include(joinpath("systems", "classical", "digital", "csk", "onewayunichannelcsk.jl"))
+include(joinpath("systems", "classical", "digital", "digital_systems.jl"))
+include(joinpath("systems", "classical", "digital", "csk", "UTURUniChannelCSK.jl"))
 end # module
