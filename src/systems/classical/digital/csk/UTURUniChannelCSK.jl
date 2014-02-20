@@ -28,11 +28,11 @@ UTURUniChannelCSK(; coherent::Bool=false, carrier::Carrier=LogisticCarrier(5), n
   decoder::Decoder=CorDecoder()) = UTURUniChannelCSK(coherent, carrier, noise, decoder)
 
 function uturunichannelcsk_snr2var(snr::Float64; carrier::Carrier=LogisticCarrier(5))
-  var(carrier.pdf)/(10.0^(snr/10.0))
+  var(carrier.density)/(10.0^(snr/10.0))
 end
 
 function uturunichannelcsk_var2snr(v::Float64; carrier::Carrier=LogisticCarrier(5))
-  10.0*log10(var(carrier.pdf)/v)
+  10.0*log10(var(carrier.density)/v)
 end
 
 function logmcml(d::UTURUniChannelCSKMCMLDecoder, v::Float64, t::Vector{Float64})

@@ -39,8 +39,12 @@ export
   RandomProcessCarrier,
   QuasiRandomCarrier,
   IterativeMapCarrier,
+  FSPWL,
   LogisticCarrier,
-  BernoulliCarrier,
+  BernoulliCarrier, # EMulated type, it is in fact a function
+  NBernoulliCarrier, # EMulated type, it is in fact a function
+  TentCarrier, # EMulated type, it is in fact a function
+  ValleyCarrier, # EMulated type, it is in fact a function
   Decoder,
   DeterministicDecoder,
   QuasiRandomDecoder,
@@ -49,8 +53,14 @@ export
   MCMLDecoder,
 
   # Functions
+  logistic,
+  bernoulli,
+  nbernoulli,
+  tent,
+  valley,
   initialize,
-  iterate,
+  generate!,
+  generate,
   snr2var,
   var2snr,
   mcml_decoder,
@@ -96,6 +106,7 @@ type MinMaxError <: Exception
     msg::String
 end
 
+include(joinpath("carriers", "maps.jl"))
 include(joinpath("carriers", "carriers.jl"))
 include(joinpath("carriers", "iterative_map_carriers.jl"))
 include(joinpath("decoders", "decoders.jl"))
