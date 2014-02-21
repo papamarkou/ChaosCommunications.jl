@@ -1,5 +1,6 @@
 module ChaosCommunications
 
+using NumericExtensions
 using Distributions
 using StatsBase
 using NLopt
@@ -106,9 +107,9 @@ typealias DigitalUTURUniChannelSystem DigitalSystem{OneWay{UniTransmitter, UniRe
 
 typealias FunctionOrNothing Union(Function, Nothing)
 
-type MinMaxError <: Exception
-    msg::String
-end
+# type MinMaxError <: Exception
+#     msg::String
+# end
 
 include(joinpath("carriers", "maps.jl"))
 include(joinpath("carriers", "carriers.jl"))

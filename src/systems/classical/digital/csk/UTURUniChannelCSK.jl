@@ -36,7 +36,7 @@ function uturunichannelcsk_var2snr(v::Float64; carrier::Carrier=LogisticCarrier(
 end
 
 function logmcml(d::UTURUniChannelCSKMCMLDecoder, v::Float64, t::Vector{Float64})
-  log(sum(exp(-0.5*t/v)))-d.carrier.len*(log(v)+log2π)-log(d.nmc)
+  logsumexp(-0.5*t/v)-d.carrier.len*(log(v)+log2π)-log(d.nmc)
 end
 
 function gradlogmcml(d::UTURUniChannelCSKMCMLDecoder, v::Float64, t::Vector{Float64})
@@ -50,10 +50,10 @@ function decode(d::UTURUniChannelCSKMCMLDecoder, r1::Vector{Float64}, r2::Vector
 
   for i = 1:d.nmc
     generate!(d.carrier, x)
-    x = x-mean(d.carrier)
-    dotr2 = dot(r2-x, r2-x)
-    tp1[i] = dot(r1-x, r1-x)+dotr2
-    tm1[i] = dot(r1+x, r1+x)+dotr2 
+    subtract!(x, mean(d.carrier))
+    dotr2 = sumsqdiff(r2, x)
+    tp1[i] = sumsqdiff(r1, x)+dotr2
+    tm1[i] = sumsq(r1+x)+dotr2
   end
 
   function objective_fp1(v::Vector{Float64}, grad::Vector{Float64})
@@ -98,7 +98,7 @@ function sim_sys(s::UTURUniChannelCSK, bit::Int)
 
   x = Array(Float64, s.carrier.len)
   generate!(s.carrier, x)
-  x = x-mean(x)
+  subtract!(x, mean(s.carrier))
   r1 = bit*x+rand(s.noise, s.carrier.len)
   r2 = s.coherent ? x : x+rand(s.noise, s.carrier.len)
   decode(s.decoder, r1, r2)

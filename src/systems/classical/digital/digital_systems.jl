@@ -17,7 +17,7 @@ function sim_ber(s::DigitalSystem, bit::Int, n::Int64)
 end
 
 function sim_ber(s::Vector{DigitalSystem}, bit::Int, n::Int64)
-  slen = length(s)
+  slen::Int = length(s)
   output = cell(slen)
 
   for i = 1:slen
@@ -36,7 +36,7 @@ function psim_ber(s::DigitalSystem, bit::Int, n::Int64)
 end
 
 function psim_ber(s::Vector{DigitalSystem}, bit::Int, n::Int64)
-  slen = length(s)
+  slen::Int = length(s)
   output = cell(slen)
 
   for i = 1:slen
