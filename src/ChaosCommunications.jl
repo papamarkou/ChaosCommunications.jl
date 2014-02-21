@@ -7,7 +7,6 @@ using NLopt
 
 import Base.mean, Base.var, Base.rand
 import Distributions.log2π, Distributions.@continuous_distr_support
-import StatsBase.RealVector
 
 export
   # Types
@@ -49,6 +48,7 @@ export
   TentCarrier, # EMulated type, it is in fact a function
   ValleyCarrier, # EMulated type, it is in fact a function
   CircularCarrier,
+  PBCSCarrier,
   Decoder,
   DeterministicDecoder,
   QuasiRandomDecoder,
@@ -114,6 +114,7 @@ typealias FunctionOrNothing Union(Function, Nothing)
 include(joinpath("carriers", "maps.jl"))
 include(joinpath("carriers", "carriers.jl"))
 include(joinpath("carriers", "iterative_map_carriers.jl"))
+include(joinpath("carriers", "PBCSCarrier.jl"))
 include(joinpath("decoders", "decoders.jl"))
 include(joinpath("decoders", "mcml_decoders.jl"))
 include("noise.jl")

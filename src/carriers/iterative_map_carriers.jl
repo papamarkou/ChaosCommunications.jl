@@ -1,6 +1,6 @@
 initialize(c::IterativeMapCarrier) = rand(c.density)
 
-function generate!(c::IterativeMapCarrier, x::RealVector)
+function generate!(c::IterativeMapCarrier, x::Vector{Float64})
   x[1] = initialize(c)
 
   for i = 2:c.len
@@ -10,9 +10,11 @@ function generate!(c::IterativeMapCarrier, x::RealVector)
   return x
 end
 
-generate(c::IterativeMapCarrier) = generate!(c, Array(Real, c.len))
+generate(c::IterativeMapCarrier) = generate!(c, Array(Float64, c.len))
 
 mean(c::IterativeMapCarrier) = mean(c.density)
+
+var(c::IterativeMapCarrier) = var(c.density)
 
 immutable LogisticCarrier <: IterativeMapCarrier
   density::Distribution
