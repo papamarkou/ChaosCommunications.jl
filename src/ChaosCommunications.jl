@@ -4,8 +4,8 @@ using Distributions
 using StatsBase
 using NLopt
 
-import Base.mean
-import Distributions.log2π
+import Base.mean, Base.var, Base.rand
+import Distributions.log2π, Distributions.@continuous_distr_support
 import StatsBase.RealVector
 
 export
@@ -35,16 +35,19 @@ export
   DigitalOneWayUniChannelSystem,
   DigitalUTURUniChannelSystem,
   UTURUniChannelCSK,
+  VDist,
   Carrier,
   RandomProcessCarrier,
   QuasiRandomCarrier,
   IterativeMapCarrier,
-  FSPWL,
+  FSPWLCarrier,
+  FSPWL2BCarrier,
   LogisticCarrier,
   BernoulliCarrier, # EMulated type, it is in fact a function
   NBernoulliCarrier, # EMulated type, it is in fact a function
   TentCarrier, # EMulated type, it is in fact a function
   ValleyCarrier, # EMulated type, it is in fact a function
+  CircularCarrier,
   Decoder,
   DeterministicDecoder,
   QuasiRandomDecoder,
@@ -58,6 +61,7 @@ export
   nbernoulli,
   tent,
   valley,
+  circular,
   initialize,
   generate!,
   generate,
