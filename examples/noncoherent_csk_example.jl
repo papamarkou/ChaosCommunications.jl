@@ -4,7 +4,7 @@ println("    Testing correlation decoder of non-coherent single user CSK...")
 
 carrier = LogisticCarrier(4)
 
-noise_var = snr2var(10., system=:UTURUniChannelCSK, carrier=carrier)
+noise_var = snr2var(5., system=:UTURUniChannelCSK, carrier=carrier)
 
 system = UTURUniChannelCSK(false, carrier, noise=Normal(0., sqrt(noise_var)))
 
@@ -12,12 +12,7 @@ system = UTURUniChannelCSK(false, carrier, noise=Normal(0., sqrt(noise_var)))
 
 println("    Testing MCML decoder of non-coherent single user CSK...")
 
-opt = Opt(:LD_SLSQP, 1)
-lower_bounds!(opt, [0.])
-upper_bounds!(opt, [10.])
-ftol_abs!(opt, 1e-32)
-
-decoder = mcml_decoder(system=:UTURUniChannelCSK, nmc=50, opt=opt, carrier=carrier)
+decoder = mcml_decoder(system=:UTURUniChannelCSK, carrier=carrier)
 
 system = UTURUniChannelCSK(false, carrier, noise=Normal(0., sqrt(noise_var)), decoder=decoder)
 

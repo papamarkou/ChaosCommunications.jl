@@ -25,10 +25,10 @@ UTURUniChannelCSKMCMLDecoder(c::Carrier, nmc::Int64, opt::Opt, init::Float64) =
   UTURUniChannelCSKMCMLDecoder(c, nmc, [opt, opt], [init, init])
 
 # Default optimizer for MCML decoder of non-coherent UTURUniChannelCSK
-uturunichannelcsk_default_opt = Opt(:LD_MMA, 1)
+uturunichannelcsk_default_opt = Opt(:LD_SLSQP, 1)
 lower_bounds!(uturunichannelcsk_default_opt, [0.])
-upper_bounds!(uturunichannelcsk_default_opt, [10.])
-xtol_rel!(uturunichannelcsk_default_opt, 1e-32)
+upper_bounds!(uturunichannelcsk_default_opt, [100.])
+ftol_abs!(uturunichannelcsk_default_opt, 1e-32)
 
 UTURUniChannelCSKMCMLDecoder(; carrier::Carrier=LogisticCarrier(5), nmc::Int64=50,
   opt::Union(Opt, Vector{Opt})=uturunichannelcsk_default_opt, init::Union(Float64, Vector{Float64})=1.) =
