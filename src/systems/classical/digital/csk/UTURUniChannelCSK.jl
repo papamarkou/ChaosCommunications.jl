@@ -27,13 +27,18 @@ UTURUniChannelCSK(coh::Bool, c::Carrier; noise::Distribution=Normal(), decoder::
 UTURUniChannelCSK(; coherent::Bool=false, carrier::Carrier=LogisticCarrier(5), noise::Distribution=Normal(),
   decoder::Decoder=CorDecoder()) = UTURUniChannelCSK(coherent, carrier, noise, decoder)
 
-function uturunichannelcsk_snr2var(snr::Float64; carrier::Carrier=LogisticCarrier(5))
-  var(carrier)/(10.0^(snr/10.0))
-end
+uturunichannelcsk_snrdb2var(s::Float64; carrier::Carrier=LogisticCarrier(5)) = var(carrier)/(10.0^(s/10.0))
 
-function uturunichannelcsk_var2snr(v::Float64; carrier::Carrier=LogisticCarrier(5))
-  10.0*log10(var(carrier)/v)
-end
+uturunichannelcsk_var2snrdb(v::Float64; carrier::Carrier=LogisticCarrier(5)) = 10.0*log10(var(carrier)/v)
+
+uturunichannelcsk_ebn0db2var(eb::Float64; carrier::Carrier=LogisticCarrier(5)) =
+  carrier.len*var(carrier)/(10.0^(eb/10.0))
+
+uturunichannelcsk_var2ebn0db(v::Float64; carrier::Carrier=LogisticCarrier(5)) = 10.0*log10(carrier.len*var(carrier)/v)
+
+uturunichannelcsk_ebn0db2snrdb(eb::Float64; carrier::Carrier=LogisticCarrier(5)) = eb-10.0*log10(carrier.len)
+
+uturunichannelcsk_snrdb2ebn0db(s::Float64; carrier::Carrier=LogisticCarrier(5)) = s+10.0*log10(carrier.len)
 
 function logmcml(d::UTURUniChannelCSKMCMLDecoder, v::Float64, t::Vector{Float64})
   logsumexp(-0.5*t/v)-d.carrier.len*(log(v)+log2π)-log(d.nmc)

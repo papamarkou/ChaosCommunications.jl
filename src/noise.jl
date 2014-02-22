@@ -1,17 +1,49 @@
-snr_types = (:UTURUniChannelCSK,)
+snrdb_types = (:UTURUniChannelCSK,)
 
-function snr2var(snr::Float64; system::Symbol=:UTURUniChannelCSK, args...)
-  @assert in(system, snr_types) "SNR not defined for $system"
+function snrdb2var(s::Float64; system::Symbol=:UTURUniChannelCSK, args...)
+  @assert in(system, snrdb_types) "SNR not defined for $system"
 
   if system == :UTURUniChannelCSK
-    uturunichannelcsk_snr2var(snr; args...)
+    uturunichannelcsk_snrdb2var(s; args...)
   end
 end
 
-function var2snr(v::Float64; system::Symbol=:UTURUniChannelCSK, args...)
-  @assert in(system, snr_types) "SNR not defined for $system"
+function var2snrdb(v::Float64; system::Symbol=:UTURUniChannelCSK, args...)
+  @assert in(system, snrdb_types) "SNR not defined for $system"
 
   if system == :UTURUniChannelCSK
-    uturunichannelcsk_var2snr(v; args...)
+    uturunichannelcsk_var2snrdb(v; args...)
+  end
+end
+
+function ebn0db2var(eb::Float64; system::Symbol=:UTURUniChannelCSK, args...)
+  @assert in(system, snrdb_types) "SNR not defined for $system"
+
+  if system == :UTURUniChannelCSK
+    uturunichannelcsk_ebn0db2var(eb; args...)
+  end
+end
+
+function var2ebn0db(v::Float64; system::Symbol=:UTURUniChannelCSK, args...)
+  @assert in(system, snrdb_types) "SNR not defined for $system"
+
+  if system == :UTURUniChannelCSK
+    uturunichannelcsk_var2ebn0db(v; args...)
+  end
+end
+
+function ebn0db2snrdb(eb::Float64; system::Symbol=:UTURUniChannelCSK, args...)
+  @assert in(system, snrdb_types) "SNR not defined for $system"
+
+  if system == :UTURUniChannelCSK
+    uturunichannelcsk_ebn0db2snrdb(eb; args...)
+  end
+end
+
+function snrdb2ebn0db(s::Float64; system::Symbol=:UTURUniChannelCSK, args...)
+  @assert in(system, snrdb_types) "SNR not defined for $system"
+
+  if system == :UTURUniChannelCSK
+    uturunichannelcsk_snrdb2ebn0db(s; args...)
   end
 end

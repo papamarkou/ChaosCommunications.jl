@@ -1,5 +1,4 @@
-examples = ["coherent_csk_example",
-  "noncoherent_csk_example"]
+examples = ["UTURUniChannelCSK_example"]
 
 println("Running tests:")
 
