@@ -108,3 +108,15 @@ function sim_sys(s::UTURUniChannelCSK, bit::Int)
   r2 = s.coherent ? x : x+rand(s.noise, s.carrier.len)
   decode(s.decoder, r1, r2)
 end
+
+function ber_lb(s::UTURUniChannelCSK; btype::Symbol=:jensen)
+  if btype == :jensen
+    if isa(s.noise, Normal) && s.noise.μ == 0.0
+      cdf(Normal(), -sqrt(s.carrier.len*var(s.carrier))/s.noise.σ)
+    else
+      error("Jensen's BER lower bound defined for UTURUniChannelCSK only for Normal noise with zero mean.")
+    end
+  else
+    error("$btype type of BER lower bound not known for UTURUniChannelCSK.")
+  end
+end

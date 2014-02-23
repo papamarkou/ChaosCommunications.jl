@@ -6,7 +6,7 @@ function bernoulli(x::Float64, l::Float64, u::Float64, nc::Float64)
   elseif nc<=x && x<=u
     return ((u-l)*x+(l-nc)*u)/(u-nc)
   else
-    error("Input out of domain of Bernoulli map")
+    error("Input out of domain of Bernoulli map.")
   end
 end
 
@@ -16,7 +16,7 @@ function nbernoulli(x::Float64, l::Float64, u::Float64, nc::Float64)
   elseif nc<=x && x<=u
     return ((l-u)*x+(u^2-l*nc))/(u-nc)
   else
-    error("Input out of domain of negative Bernoulli map")
+    error("Input out of domain of negative Bernoulli map.")
   end
 end
 
@@ -26,7 +26,7 @@ function tent(x::Float64, l::Float64, u::Float64, nc::Float64)
   elseif nc<=x && x<=u
     ((l-u)*x+(u^2-l*nc))/(u-nc)
   else
-    error("Input out of domain of tent map")
+    error("Input out of domain of tent map.")
   end
 end
 
@@ -36,7 +36,7 @@ function valley(x::Float64, l::Float64, u::Float64, nc::Float64)
   elseif nc<=x && x<=u
     ((u-l)*x+(l-nc)*u)/(u-nc)
   else
-    error("Input out of domain of valley map")
+    error("Input out of domain of valley map.")
   end
 end
 
@@ -48,7 +48,7 @@ function circular(x::Float64, nc::Float64)
   elseif sqrt(nc)<=x && x<=1.
     y = -sqrt((1.-x^2)/(1.-nc))
   else
-    error("Input out of domain of circular map")
+    error("Input out of domain of circular map.")
   end
 end
 

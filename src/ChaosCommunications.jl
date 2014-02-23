@@ -76,7 +76,8 @@ export
   decode,
   sim_sys,
   sim_ber,
-  psim_ber
+  psim_ber,
+  ber_lb
 
 abstract InfoForm
 abstract Classical <: InfoForm
