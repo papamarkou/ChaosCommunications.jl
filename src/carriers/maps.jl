@@ -76,7 +76,7 @@ function pdf(d::VDist, x::Real)
 end
 
 function rand(d::VDist)
-  u::Float64 = rand()
+  u = rand()
 
   if 0.0<=u && u<1.0-d.nc
     -sqrt((u+d.nc-1.0)/(d.nc-1.0))

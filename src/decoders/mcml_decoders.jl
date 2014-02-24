@@ -26,19 +26,19 @@ UTURUniChannelCSKMCMLDecoder(c::Carrier, nmc::Int64, opt::Opt, init::Float64) =
 
 # Default optimizer for MCML decoder of non-coherent UTURUniChannelCSK
 uturunichannelcsk_default_opt = Opt(:LD_SLSQP, 1)
-lower_bounds!(uturunichannelcsk_default_opt, [0.])
-upper_bounds!(uturunichannelcsk_default_opt, [100.])
+lower_bounds!(uturunichannelcsk_default_opt, [0.0])
+upper_bounds!(uturunichannelcsk_default_opt, [100.0])
 ftol_abs!(uturunichannelcsk_default_opt, 1e-32)
 
 UTURUniChannelCSKMCMLDecoder(; carrier::Carrier=LogisticCarrier(5), nmc::Int64=50,
-  opt::Union(Opt, Vector{Opt})=uturunichannelcsk_default_opt, init::Union(Float64, Vector{Float64})=1.) =
+  opt::Union(Opt, Vector{Opt})=uturunichannelcsk_default_opt, init::Union(Float64, Vector{Float64})=1.0) =
   UTURUniChannelCSKMCMLDecoder(carrier, nmc, opt, init)
 
 # Wrapper for MCML decoder construction of any systems that supports MCML decoding
 mcml_types = (:UTURUniChannelCSK,)
 
 function mcml_decoder(; system::Symbol=:UTURUniChannelCSK, args...)
-  @assert in(system, mcml_types) "MCML decoder not defined for $system"
+  @assert in(system, mcml_types) "MCML decoder not defined for $system."
 
   if system == :UTURUniChannelCSK
     UTURUniChannelCSKMCMLDecoder(; args...)

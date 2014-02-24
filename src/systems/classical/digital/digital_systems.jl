@@ -34,7 +34,7 @@ function sim_ber(s::DigitalSystem, bit::Int, n::Int64)
 end
 
 function sim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64)
-  slen::Int = length(s)
+  slen = length(s)
   output = cell(slen)
 
   for i = 1:slen
@@ -85,7 +85,7 @@ function psim_ber(s::DigitalSystem, bit::Int, n::Int64)
 end
 
 function psim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64)
-  slen::Int = length(s)
+  slen = length(s)
   output = cell(slen)
 
   for i = 1:slen
@@ -109,7 +109,7 @@ function psim_ber{T<:DigitalSystem}(s::Matrix{T}, bit::Int, n::Int64)
 end
 
 function ber_lb{T<:DigitalSystem}(s::Vector{T}; args...)
-  slen::Int = length(s)
+  slen = length(s)
   output = Array(Float64, slen)
 
   for i = 1:slen

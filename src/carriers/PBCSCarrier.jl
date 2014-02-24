@@ -7,12 +7,12 @@ PBCSCarrier(len::Int) = PBCSCarrier(0.0, len)
 PBCSCarrier(; c::Float64=0.0, len::Int=5) = PBCSCarrier(c, len)
 
 function invcdf_pbcs(c::PBCSCarrier, x::Float64)
-  if ((0<=x) && (x<0.5))
+  if ((0.0<=x) && (x<0.5))
     -sqrt(1-2*x)+c.c
-  elseif ((0.5<=x) && (x<=1))
+  elseif ((0.5<=x) && (x<=1.0))
     sqrt(2*x-1)+c.c
   else
-    error("Input out of domain of inverse cdf of PBCS")
+    error("Input out of domain of inverse cdf of PBCS.")
   end
 end
 

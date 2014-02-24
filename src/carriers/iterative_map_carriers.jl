@@ -56,24 +56,24 @@ function FSPWL2BCarrier(l::Float64, u::Float64, nc::Float64, len::Int, mtype::Sy
   end
 end
 
-FSPWL2BCarrier(; l::Float64=0., u::Float64=1., nc::Float64=0.5, density::Distribution=Uniform(0., 1.), len::Int=5,
+FSPWL2BCarrier(; l::Float64=0.0, u::Float64=1.0, nc::Float64=0.5, density::Distribution=Uniform(0.0, 1.0), len::Int=5,
   iterate::Function=(x::Float64)->bernoulli(x, l, u, nc)) = FSPWL2BCarrier(l, u, nc, density, len, iterate)
 
 BernoulliCarrier(l::Float64, u::Float64, nc::Float64, len::Int) = FSPWL2BCarrier(l, u, nc, len, :bernoulli)
 BernoulliCarrier(l::Float64, u::Float64, len::Int) = BernoulliCarrier(l, u, 0.5*(l-u), len)
-BernoulliCarrier(len::Int) = BernoulliCarrier(0., 1., 0.5, len)
+BernoulliCarrier(len::Int) = BernoulliCarrier(0.0, 1.0, 0.5, len)
 
 NBernoulliCarrier(l::Float64, u::Float64, nc::Float64, len::Int) = FSPWL2BCarrier(l, u, nc, len, :nbernoulli)
 NBernoulliCarrier(l::Float64, u::Float64, len::Int) = NBernoulliCarrier(l, u, 0.5*(l-u), len)
-NBernoulliCarrier(len::Int) = NBernoulliCarrier(0., 1., 0.5, len)
+NBernoulliCarrier(len::Int) = NBernoulliCarrier(0.0, 1.0, 0.5, len)
 
 TentCarrier(l::Float64, u::Float64, nc::Float64, len::Int) = FSPWL2BCarrier(l, u, nc, len, :tent)
 TentCarrier(l::Float64, u::Float64, len::Int) = TentCarrier(l, u, 0.5*(l-u), len)
-TentCarrier(len::Int) = TentCarrier(0., 1., 0.5, len)
+TentCarrier(len::Int) = TentCarrier(0.0, 1.0, 0.5, len)
 
 ValleyCarrier(l::Float64, u::Float64, nc::Float64, len::Int) = FSPWL2BCarrier(l, u, nc, len, :valley)
 ValleyCarrier(l::Float64, u::Float64, len::Int) = ValleyCarrier(l, u, 0.5*(l-u), len)
-ValleyCarrier(len::Int) = ValleyCarrier(0., 1., 0.5, len)
+ValleyCarrier(len::Int) = ValleyCarrier(0.0, 1.0, 0.5, len)
 
 immutable CircularCarrier <: IterativeMapCarrier
   nc::Float64 # non-centrality parameter
@@ -82,7 +82,7 @@ immutable CircularCarrier <: IterativeMapCarrier
   iterate::Function
 
   function CircularCarrier(nc::Float64, density::Distribution, len::Int, iterate::Function)
-    @assert -1.<nc && nc<1. "Non-centrality parameter must be in the interior of domain of circular map."
+    @assert -1.0<nc && nc<1.0 "Non-centrality parameter must be in the interior of domain of circular map."
     new(nc, density, len, iterate)
   end
 end
