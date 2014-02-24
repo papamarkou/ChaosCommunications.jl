@@ -1,19 +1,19 @@
-function gen_sys(sprlen::Ranges{Int}, ebn0db::Ranges{Float64}; system::Symbol=:UTURUniChannelCSK, args...)
+function gen_sys(ebn0db::Ranges{Float64}, sprlen::Ranges{Int}; system::Symbol=:UTURUniChannelCSK, args...)
   if system == :UTURUniChannelCSK
-    uturunichannelcsk_gen_sys(sprlen, ebn0db; args...)
+    uturunichannelcsk_gen_sys(ebn0db, sprlen; args...)
   else
     error("sim_ber was called with invalid arguments.")
   end
 end
 
-gen_sys(sprlen::Int, ebn0db::Ranges{Float64}; system::Symbol=:UTURUniChannelCSK, args...) =
-  gen_sys(sprlen:sprlen, ebn0db; system=system, args...)
+gen_sys(ebn0db::Float64, sprlen::Ranges{Int}; system::Symbol=:UTURUniChannelCSK, args...) =
+  gen_sys(ebn0db:ebn0db, sprlen; system=system, args...)
 
-gen_sys(sprlen::Ranges{Int}, ebn0db::Float64; system::Symbol=:UTURUniChannelCSK, args...) =
-  gen_sys(sprlen, ebn0db:ebn0db; system=system, args...)
+gen_sys(ebn0db::Ranges{Float64}, sprlen::Int; system::Symbol=:UTURUniChannelCSK, args...) =
+  gen_sys(ebn0db, sprlen:sprlen; system=system, args...)
 
-gen_sys(sprlen::Int, ebn0db::Float64; system::Symbol=:UTURUniChannelCSK, args...) =
-  gen_sys(sprlen:sprlen, ebn0db:ebn0db; system=system, args...)
+gen_sys(ebn0db::Float64, sprlen::Int; system::Symbol=:UTURUniChannelCSK, args...) =
+  gen_sys(ebn0db:ebn0db, sprlen:sprlen; system=system, args...)
 
 function sim_ber(s::DigitalSystem, bit::Int, n::Int64)
   nbiterrors::Int64 = 0

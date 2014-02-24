@@ -109,19 +109,19 @@ function sim_sys(s::UTURUniChannelCSK, bit::Int)
   decode(s.decoder, r1, r2)
 end
 
-function uturunichannelcsk_gen_sys(sprlen::Ranges{Int}, ebn0db::Ranges{Float64}; coherent::Bool=true,
+function uturunichannelcsk_gen_sys(ebn0db::Ranges{Float64}, sprlen::Ranges{Int}; coherent::Bool=true,
   carrier::Carrier=LogisticCarrier(5), decoder::Decoder=CorDecoder())
-  systems = Array(UTURUniChannelCSK, sprlen.len, ebn0db.len)
+  systems = Array(UTURUniChannelCSK, ebn0db.len, sprlen.len)
 
-  for i = 1:sprlen.len
-    for j = 1:ebn0db.len
+  for i = 1:ebn0db.len
+    for j = 1:sprlen.len
       ckwargs = Dict()
       for k in typeof(carrier).names
-        ckwargs[k] = k != :len ? carrier.(k) : sprlen[i] 
+        ckwargs[k] = k != :len ? carrier.(k) : sprlen[j] 
       end
       c = typeof(carrier)(; ckwargs...)
 
-      v = ebn0db2var(ebn0db[j]; system=:UTURUniChannelCSK, carrier=c)
+      v = ebn0db2var(ebn0db[i]; system=:UTURUniChannelCSK, carrier=c)
 
       d = isa(decoder, CorDecoder) ? decoder : typeof(decoder)(system=:UTURUniChannelCSK, carrier=c)
 
