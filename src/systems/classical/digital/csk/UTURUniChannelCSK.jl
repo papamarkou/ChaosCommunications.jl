@@ -110,7 +110,7 @@ function sim_sys(s::UTURUniChannelCSK, bit::Int)
 end
 
 function uturunichannelcsk_gen_sys(ebn0db::Ranges{Float64}, sprlen::Ranges{Int}; coherent::Bool=true,
-  carrier::Carrier=LogisticCarrier(5), decoder::Decoder=CorDecoder())
+  carrier::Carrier=LogisticCarrier(), decoder::Decoder=CorDecoder())
   systems = Array(UTURUniChannelCSK, ebn0db.len, sprlen.len)
 
   for i = 1:ebn0db.len

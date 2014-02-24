@@ -4,6 +4,7 @@ immutable PBCSCarrier <: QuasiRandomCarrier
 end
 
 PBCSCarrier(len::Int) = PBCSCarrier(0.0, len)
+PBCSCarrier() = PBCSCarrier(0.0, 0)
 PBCSCarrier(; c::Float64=0.0, len::Int=5) = PBCSCarrier(c, len)
 
 function invcdf_pbcs(c::PBCSCarrier, x::Float64)
