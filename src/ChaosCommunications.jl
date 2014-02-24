@@ -74,6 +74,7 @@ export
   snrdb2ebn0db,
   mcml_decoder,
   decode,
+  gen_sys,
   sim_sys,
   sim_ber,
   psim_ber,

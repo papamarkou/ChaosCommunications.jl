@@ -22,8 +22,9 @@ immutable LogisticCarrier <: IterativeMapCarrier
   iterate::Function
 end
 
-LogisticCarrier(density::Distribution, len::Int) = LogisticCarrier(density, len, logistic)
 LogisticCarrier(len::Int) = LogisticCarrier(Beta(0.5, 0.5), len, logistic)
+LogisticCarrier(; density::Distribution=Beta(0.5, 0.5), len::Int=5, iterate::Function=logistic) =
+  LogisticCarrier(density, len, iterate)
 
 immutable FSPWL2BCarrier <: FSPWLCarrier # 2-branch fully-stretching piece-wise linear maps
   l::Float64 # minimum of domain
@@ -55,6 +56,9 @@ function FSPWL2BCarrier(l::Float64, u::Float64, nc::Float64, len::Int, mtype::Sy
   end
 end
 
+FSPWL2BCarrier(; l::Float64=0., u::Float64=1., nc::Float64=0.5, density::Distribution=Uniform(0., 1.), len::Int=5,
+  iterate::Function=(x::Float64)->bernoulli(x, l, u, nc)) = FSPWL2BCarrier(l, u, nc, density, len, iterate)
+
 BernoulliCarrier(l::Float64, u::Float64, nc::Float64, len::Int) = FSPWL2BCarrier(l, u, nc, len, :bernoulli)
 BernoulliCarrier(l::Float64, u::Float64, len::Int) = BernoulliCarrier(l, u, 0.5*(l-u), len)
 BernoulliCarrier(len::Int) = BernoulliCarrier(0., 1., 0.5, len)
@@ -85,3 +89,5 @@ end
 
 CircularCarrier(nc::Float64, len::Int) = CircularCarrier(nc, VDist(nc), len, (x::Float64)->circular(x, nc))
 CircularCarrier(len::Int) = CircularCarrier(0.42, VDist(0.42), len, (x::Float64)->circular(x, 0.42))
+CircularCarrier(; nc::Float64=0.42, density::Distribution=VDist(0.42), len::Int=5,
+  iterate::Function=(x::Float64)->circular(x, 0.42)) = CircularCarrier(nc, density, len, iterate)

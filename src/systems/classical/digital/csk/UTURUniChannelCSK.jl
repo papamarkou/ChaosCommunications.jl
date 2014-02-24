@@ -109,6 +109,52 @@ function sim_sys(s::UTURUniChannelCSK, bit::Int)
   decode(s.decoder, r1, r2)
 end
 
+function uturunichannelcsk_gen_sys(sprlen::Ranges{Int}, ebn0db::Ranges{Float64}; coherent::Bool=true,
+  carrier::Carrier=LogisticCarrier(5), decoder::Decoder=CorDecoder())
+  systems = Array(UTURUniChannelCSK, sprlen.len, ebn0db.len)
+
+  for i = 1:sprlen.len
+    for j = 1:ebn0db.len
+      ckwargs = Dict()
+      for k in typeof(carrier).names
+        ckwargs[k] = k != :len ? carrier.(k) : sprlen[i] 
+      end
+      c = typeof(carrier)(; ckwargs...)
+
+      v = ebn0db2var(ebn0db[j]; system=:UTURUniChannelCSK, carrier=c)
+
+      d = isa(decoder, CorDecoder) ? decoder : typeof(decoder)(system=:UTURUniChannelCSK, carrier=c)
+
+      systems[i, j] = UTURUniChannelCSK(coherent, c; noise=Normal(0., sqrt(v)), decoder=d)
+    end
+  end
+
+  return systems
+end
+
+function uturunichannelcsk_sim_ber(sprlen::Ranges{Int}, ebn0db::Ranges{Float64}; coherent::Bool=true,
+  carrier::Carrier=LogisticCarrier(5), decoder::Decoder=CorDecoder(), bit::Int=1, n::Int64=100000, parallel::Bool=false)
+  estimation_errors = Array(Int64, sprlen.len, ebn0db.len)
+  decoding_failures = Array(Int64, sprlen.len, ebn0db.len)
+  bers = Array(Float64, sprlen.len, ebn0db.len)
+
+  sim_function = parallel ? psim_ber : sim_ber
+
+  systems = uturunichannelcsk_gen_sys(sprlen, ebn0db; coherent=coherent, carrier=carrier, decoder=decoder)
+
+  for i = 1:sprlen.len
+    for j = 1:ebn0db.len      
+      try
+        estimation_errors[i, j], decoding_failures[i, j], bers[i, j] = sim_function(systems[i, j], bit, n)
+      catch
+        estimation_errors[i, j] = decoding_failures[i, j] = bers[i, j] = NaN
+      end
+    end
+  end
+
+  return estimation_errors, decoding_failures, bers
+end
+
 function ber_lb(s::UTURUniChannelCSK; btype::Symbol=:jensen)
   if btype == :jensen
     if isa(s.noise, Normal) && s.noise.μ == 0.0
