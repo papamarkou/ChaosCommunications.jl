@@ -16,21 +16,21 @@ gen_sys(sprlen::Int, ebn0db::Float64; system::Symbol=:UTURUniChannelCSK, args...
   gen_sys(sprlen:sprlen, ebn0db:ebn0db; system=system, args...)
 
 function sim_ber(s::DigitalSystem, bit::Int, n::Int64)
-  estimation_errors::Int64 = 0
-  decoding_failures::Int64 = 0
+  nbiterrors::Int64 = 0
+  ndecfails::Int64 = 0
 
   for i = 1:n
     bit_estimate = sim_sys(s, bit)
     if in(bit_estimate, [-1, 1])
       if bit_estimate != bit
-        estimation_errors += 1
+        nbiterrors += 1
       end
     else
-      decoding_failures += 1
+      ndecfails += 1
     end
   end
 
-  estimation_errors, decoding_failures, estimation_errors/(n-decoding_failures)
+  nbiterrors, ndecfails, nbiterrors/(n-ndecfails)
 end
 
 function sim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64)
@@ -57,31 +57,14 @@ function sim_ber{T<:DigitalSystem}(s::Matrix{T}, bit::Int, n::Int64)
   return output
 end
 
-function sim_ber(sprlen::Ranges{Int}, ebn0db::Ranges{Float64}; system::Symbol=:UTURUniChannelCSK, args...)
-  if system == :UTURUniChannelCSK
-    uturunichannelcsk_sim_ber(sprlen, ebn0db; args...)
-  else
-    error("sim_ber was called with invalid arguments.")
-  end
-end
-
-sim_ber(sprlen::Int, ebn0db::Ranges{Float64}; system::Symbol=:UTURUniChannelCSK, args...) =
-  sim_ber(sprlen:sprlen, ebn0db; system=system, args...)
-
-sim_ber(sprlen::Ranges{Int}, ebn0db::Float64; system::Symbol=:UTURUniChannelCSK, args...) =
-  sim_ber(sprlen, ebn0db:ebn0db; system=system, args...)
-
-sim_ber(sprlen::Int, ebn0db::Float64; system::Symbol=:UTURUniChannelCSK, args...) =
-  sim_ber(sprlen:sprlen, ebn0db:ebn0db; system=system, args...)
-
 function psim_ber(s::DigitalSystem, bit::Int, n::Int64)
-  decoding_failures, estimation_errors =
+  ndecfails, nbiterrors =
   (@parallel (+) for i = 1:n
     bit_estimate = sim_sys(s, bit)
     in(bit_estimate, [-1, 1]) ? (bit_estimate == bit ? [0, 0]: [0, 1]) : [1, 0]
   end)
 
-  estimation_errors, decoding_failures, estimation_errors/(n-decoding_failures)
+  nbiterrors, ndecfails, nbiterrors/(n-ndecfails)
 end
 
 function psim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64)

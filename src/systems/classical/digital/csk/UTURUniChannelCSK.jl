@@ -132,27 +132,68 @@ function uturunichannelcsk_gen_sys(sprlen::Ranges{Int}, ebn0db::Ranges{Float64};
   return systems
 end
 
-function uturunichannelcsk_sim_ber(sprlen::Ranges{Int}, ebn0db::Ranges{Float64}; coherent::Bool=true,
-  carrier::Carrier=LogisticCarrier(5), decoder::Decoder=CorDecoder(), bit::Int=1, n::Int64=100000, parallel::Bool=false)
-  estimation_errors = Array(Int64, sprlen.len, ebn0db.len)
-  decoding_failures = Array(Int64, sprlen.len, ebn0db.len)
-  bers = Array(Float64, sprlen.len, ebn0db.len)
+function sim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64)
+  slen = length(s)
+  nbiterrors, ndecfails, bers = Array(Int64, slen), Array(Int64, slen), Array(Float64, slen)
 
-  sim_function = parallel ? psim_ber : sim_ber
+  for i = 1:slen
+    try
+      nbiterrors[i], ndecfails[i], bers[i] = sim_ber(s[i], bit, n)
+    catch
+      nbiterrors[i] = ndecfails[i] = bers[i] = NaN
+    end
+  end
 
-  systems = uturunichannelcsk_gen_sys(sprlen, ebn0db; coherent=coherent, carrier=carrier, decoder=decoder)
+  return nbiterrors, ndecfails, bers
+end
 
-  for i = 1:sprlen.len
-    for j = 1:ebn0db.len      
+function sim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64)
+  nrows, ncols = size(s)
+  nbiterrors, ndecfails, bers = Array(Int64, nrows, ncols), Array(Int64, nrows, ncols), Array(Float64, nrows, ncols)
+
+  for i = 1:nrows
+    for j = 1:ncols
       try
-        estimation_errors[i, j], decoding_failures[i, j], bers[i, j] = sim_function(systems[i, j], bit, n)
+        nbiterrors[i, j], ndecfails[i, j], bers[i, j] = sim_ber(s[i, j], bit, n)
       catch
-        estimation_errors[i, j] = decoding_failures[i, j] = bers[i, j] = NaN
+        nbiterrors[i, j] = ndecfails[i, j] = bers[i, j] = NaN
       end
     end
   end
 
-  return estimation_errors, decoding_failures, bers
+  return nbiterrors, ndecfails, bers
+end
+
+function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64)
+  slen = length(s)
+  nbiterrors, ndecfails, bers = Array(Int64, slen), Array(Int64, slen), Array(Float64, slen)
+
+  for i = 1:slen
+    try
+      nbiterrors[i], ndecfails[i], bers[i] = psim_ber(s[i], bit, n)
+    catch
+      nbiterrors[i] = ndecfails[i] = bers[i] = NaN
+    end
+  end
+
+  return nbiterrors, ndecfails, bers
+end
+
+function psim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64)
+  nrows, ncols = size(s)
+  nbiterrors, ndecfails, bers = Array(Int64, nrows, ncols), Array(Int64, nrows, ncols), Array(Float64, nrows, ncols)
+
+  for i = 1:nrows
+    for j = 1:ncols
+      try
+        nbiterrors[i, j], ndecfails[i, j], bers[i, j] = psim_ber(s[i, j], bit, n)
+      catch
+        nbiterrors[i, j] = ndecfails[i, j] = bers[i, j] = NaN
+      end
+    end
+  end
+
+  return nbiterrors, ndecfails, bers
 end
 
 function ber_lb(s::UTURUniChannelCSK; btype::Symbol=:jensen)
