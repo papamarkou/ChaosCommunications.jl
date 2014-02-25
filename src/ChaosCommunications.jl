@@ -78,7 +78,6 @@ export
   sim_sys,
   sim_ber,
   psim_ber,
-  psim_ber2,
   ber_lb
 
 abstract InfoForm
