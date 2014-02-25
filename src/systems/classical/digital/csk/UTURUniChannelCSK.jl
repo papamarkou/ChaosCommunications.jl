@@ -123,6 +123,7 @@ end
 function uturunichannelcsk_gen_sys(ebn0db::Ranges{Float64}, sprlen::Ranges{Int}; coherent::Bool=true,
   carrier::Carrier=LogisticCarrier(), decoder::Decoder=CorDecoder())
   systems = Array(UTURUniChannelCSK, ebn0db.len, sprlen.len)
+  local d
 
   for i = 1:ebn0db.len
     for j = 1:sprlen.len
@@ -134,11 +135,17 @@ function uturunichannelcsk_gen_sys(ebn0db::Ranges{Float64}, sprlen::Ranges{Int};
 
       v = ebn0db2var(ebn0db[i]; system=:UTURUniChannelCSK, carrier=c)
 
-      dkwargs = Dict()
-      for k in typeof(decoder).names
-        dkwargs[k] = k != :carrier ? decoder.(k) : c 
+      if isa(decoder, CorDecoder)
+        d = decoder
+      elseif isa(decoder, MCMLDecoder)
+        dkwargs = Dict()
+        for k in typeof(decoder).names
+          dkwargs[k] = k != :carrier ? decoder.(k) : c 
+        end
+        d = mcml_decoder(system=:UTURUniChannelCSK; dkwargs...)
+      else
+        error("$decoder is not a supported type of decoder for the uturunichannelcsk_gen_sys function.")
       end
-      d = isa(decoder, CorDecoder) ? decoder : mcml_decoder(system=:UTURUniChannelCSK; dkwargs...)
 
       systems[i, j] = UTURUniChannelCSK(coherent, c; noise=Normal(0., sqrt(v)), decoder=d)
     end
