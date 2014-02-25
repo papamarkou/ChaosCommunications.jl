@@ -134,7 +134,11 @@ function uturunichannelcsk_gen_sys(ebn0db::Ranges{Float64}, sprlen::Ranges{Int};
 
       v = ebn0db2var(ebn0db[i]; system=:UTURUniChannelCSK, carrier=c)
 
-      d = isa(decoder, CorDecoder) ? decoder : typeof(decoder)(system=:UTURUniChannelCSK, carrier=c)
+      dkwargs = Dict()
+      for k in typeof(decoder).names
+        dkwargs[k] = k != :carrier ? decoder.(k) : c 
+      end
+      d = isa(decoder, CorDecoder) ? decoder : mcml_decoder(system=:UTURUniChannelCSK; dkwargs...)
 
       systems[i, j] = UTURUniChannelCSK(coherent, c; noise=Normal(0., sqrt(v)), decoder=d)
     end
