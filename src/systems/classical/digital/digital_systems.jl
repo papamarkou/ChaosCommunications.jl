@@ -72,9 +72,8 @@ function pmap_sim_ber(s::DigitalSystem, bit::Int, n::Int64)
   ndecfails::Int64 = 0
   sim_function(bit::Int) = sim_sys(s, bit)
 
-  bit_estimates = pmap(sim_function, repeat([bit], inner=[n]))
+  bit_estimates = pmap(sim_function, fill(bit, n))
 
-  println(length(bit_estimates))
   for i = 1:n
     if in(bit_estimates[i], [-1, 1])
       if bit_estimates[i] != bit

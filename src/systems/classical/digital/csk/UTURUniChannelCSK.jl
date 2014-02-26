@@ -53,6 +53,7 @@ function decode(d::UTURUniChannelCSKMCMLDecoder, r1::Vector{Float64}, r2::Vector
   tp1, tm1 = Array(Float64, d.nmc), Array(Float64, d.nmc)
   x = Array(Float64, d.carrier.len)
   local maxfp1, maxxp1, retp1, maxfm1, maxxm1, retm1
+  opt = Array(Opt, 2)
 
   for i = 1:d.nmc
     generate!(d.carrier, x)
@@ -68,10 +69,12 @@ function decode(d::UTURUniChannelCSKMCMLDecoder, r1::Vector{Float64}, r2::Vector
     end
     logmcml(d, v[1], tp1)
   end
-  max_objective!(d.opt[1], objective_fp1)
+
+  opt[1] = convert(Opt, d.opt[1])
+  max_objective!(opt[1], objective_fp1)
 
   try
-    (maxfp1, maxxp1, retp1) = optimize(d.opt[1], [d.init[1]])
+    (maxfp1, maxxp1, retp1) = optimize(opt[1], [d.init[1]])
   catch
     return -3
   end
@@ -86,10 +89,12 @@ function decode(d::UTURUniChannelCSKMCMLDecoder, r1::Vector{Float64}, r2::Vector
     end
     logmcml(d, v[1], tm1)
   end
-  max_objective!(d.opt[2], objective_fm1)
+
+  opt[2] = convert(Opt, d.opt[2])
+  max_objective!(opt[2], objective_fm1)
 
   try
-    (maxfm1, maxxm1, retm1) = optimize(d.opt[2], [d.init[2]])
+    (maxfm1, maxxm1, retm1) = optimize(opt[2], [d.init[2]])
   catch
     return -5
   end

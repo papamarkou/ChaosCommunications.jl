@@ -10,6 +10,8 @@ import Distributions.log2π, Distributions.@continuous_distr_support
 
 export
   # Types
+  Optimizer,
+  NLoptimizer,
   InfoForm,
   Classical,
   Quantum,
@@ -83,22 +85,22 @@ export
 abstract InfoForm
 abstract Classical <: InfoForm
 abstract Quantum <: InfoForm
-type Analog <: Classical end
-type Digital <: Classical end
+immutable Analog <: Classical end
+immutable Digital <: Classical end
 
 abstract InteractionForm
 abstract TransmitterForm
 abstract ReceiverForm
-type UniTransmitter <: TransmitterForm end
-type MultiTransmitter <: TransmitterForm end
-type UniReceiver <: ReceiverForm end
-type MultiReceiver <: ReceiverForm end
+immutable UniTransmitter <: TransmitterForm end
+immutable MultiTransmitter <: TransmitterForm end
+immutable UniReceiver <: ReceiverForm end
+immutable MultiReceiver <: ReceiverForm end
 abstract OneWay{T<:TransmitterForm, R<:ReceiverForm} <: InteractionForm
 abstract TwoWay <: InteractionForm
 
 abstract ChannelForm
-type UniChannel <: ChannelForm end
-type MultiChannel <:ChannelForm end
+immutable UniChannel <: ChannelForm end
+immutable MultiChannel <:ChannelForm end
 
 abstract System{Info<:InfoForm, I<:InteractionForm, C<:ChannelForm}
 
@@ -111,6 +113,8 @@ typealias DigitalOneWayUniChannelSystem{T<:TransmitterForm, R<:ReceiverForm} Dig
 # UTUR := UniTransmitter, UniReceiver
 typealias DigitalUTURUniChannelSystem DigitalSystem{OneWay{UniTransmitter, UniReceiver}, UniChannel}
 
+typealias F64OrNothing Union(Float64, Nothing)
+typealias VF64OrNothing Union(Vector{Float64}, Nothing)
 typealias FunctionOrNothing Union(Function, Nothing)
 
 # type MinMaxError <: Exception
@@ -118,6 +122,8 @@ typealias FunctionOrNothing Union(Function, Nothing)
 # end
 
 include(joinpath("carriers", "maps.jl"))
+include(joinpath("optimizers", "NLoptimizer.jl"))
+
 include(joinpath("carriers", "carriers.jl"))
 include(joinpath("carriers", "iterative_map_carriers.jl"))
 include(joinpath("carriers", "PBCSCarrier.jl"))
