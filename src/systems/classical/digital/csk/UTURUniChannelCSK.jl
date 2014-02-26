@@ -191,13 +191,13 @@ function sim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64)
   return nbiterrors, ndecfails, bers
 end
 
-function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64)
+function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pmap)
   slen = length(s)
   nbiterrors, ndecfails, bers = Array(Int64, slen), Array(Int64, slen), Array(Float64, slen)
 
   for i = 1:slen
     try
-      nbiterrors[i], ndecfails[i], bers[i] = psim_ber(s[i], bit, n)
+      nbiterrors[i], ndecfails[i], bers[i] = psim_ber(s[i], bit, n; ptype=ptype)
     catch
       nbiterrors[i] = ndecfails[i] = bers[i] = NaN
     end
@@ -206,14 +206,14 @@ function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64)
   return nbiterrors, ndecfails, bers
 end
 
-function psim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64)
+function psim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pmap)
   nrows, ncols = size(s)
   nbiterrors, ndecfails, bers = Array(Int64, nrows, ncols), Array(Int64, nrows, ncols), Array(Float64, nrows, ncols)
 
   for i = 1:nrows
     for j = 1:ncols
       try
-        nbiterrors[i, j], ndecfails[i, j], bers[i, j] = psim_ber(s[i, j], bit, n)
+        nbiterrors[i, j], ndecfails[i, j], bers[i, j] = psim_ber(s[i, j], bit, n; ptype=ptype)
       catch
         nbiterrors[i, j] = ndecfails[i, j] = bers[i, j] = NaN
       end
