@@ -105,17 +105,17 @@ function pmap_sim_ber(s::DigitalSystem, bit::Int, n::Int64)
   nbiterrors, ndecfails, nbiterrors/(n-ndecfails)
 end
 
-function psim_ber(s::DigitalSystem, bit::Int, n::Int64; ptype::Symbol=:pmap)
-  if ptype == :pmap
-    pmap_sim_ber(s, bit, n)
-  elseif ptype == :pfor
+function psim_ber(s::DigitalSystem, bit::Int, n::Int64; ptype::Symbol=:pfor)
+  if ptype == :pfor
     pfor_sim_ber(s, bit, n)
+  elseif ptype == :pmap
+    pmap_sim_ber(s, bit, n)
   else
     error("$ptype parallel implementation not known.")
   end
 end
 
-function psim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64; ptype::Symbol=:pmap, verbose::Bool=false)
+function psim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64; ptype::Symbol=:pfor, verbose::Bool=false)
   slen = length(s)
   output = cell(slen)
   local meter
@@ -135,7 +135,7 @@ function psim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64; ptype::Sym
   return output
 end
 
-function psim_ber{T<:DigitalSystem}(s::Matrix{T}, bit::Int, n::Int64; ptype::Symbol=:pmap, verbose::Bool=false)
+function psim_ber{T<:DigitalSystem}(s::Matrix{T}, bit::Int, n::Int64; ptype::Symbol=:pfor, verbose::Bool=false)
   nrows, ncols = size(s)
   output = cell(nrows, ncols)
   local meter

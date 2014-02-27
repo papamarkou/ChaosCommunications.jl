@@ -212,7 +212,7 @@ function sim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64; verbose::Bool
   return nbiterrors, ndecfails, bers
 end
 
-function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pmap, verbose::Bool=false)
+function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pfor, verbose::Bool=false)
   slen = length(s)
   nbiterrors, ndecfails, bers = Array(Int64, slen), Array(Int64, slen), Array(Float64, slen)
   local meter
@@ -237,7 +237,7 @@ function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbo
   return nbiterrors, ndecfails, bers
 end
 
-function psim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pmap, verbose::Bool=false)
+function psim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pfor, verbose::Bool=false)
   nrows, ncols = size(s)
   nbiterrors, ndecfails, bers = Array(Int64, nrows, ncols), Array(Int64, nrows, ncols), Array(Float64, nrows, ncols)
   local meter
