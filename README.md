@@ -7,5 +7,5 @@ The `ChaosCommunications` package provides a framework for simulating chaos-base
 At the moment the package provides a generic type hierarchy of communication systems and implements the
 Chaos Shift-Keying (CSK) system. More functionality and systems will be added to the package.
 
-An example for simulating CSK and its Bit Error Rate (BER) can be found in `examples/csk_example.jl`. This example
+An example for simulating CSK and its Bit Error Rate (BER) can be found in `examples/UTURUniChannelCSK_example.jl`. This example
 demonstrates the main interface of the package.
