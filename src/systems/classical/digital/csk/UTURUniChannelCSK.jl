@@ -127,11 +127,12 @@ end
 
 function uturunichannelcsk_gen_sys(ebn0db::Ranges{Float64}, sprlen::Ranges{Int}; coherent::Bool=true,
   carrier::Carrier=LogisticCarrier(), decoder::Decoder=CorDecoder())
-  systems = Array(UTURUniChannelCSK, ebn0db.len, sprlen.len)
+  elen, slen = length(ebn0db), length(sprlen)
+  systems = Array(UTURUniChannelCSK, elen, slen)
   local d
 
-  for i = 1:ebn0db.len
-    for j = 1:sprlen.len
+  for i = 1:elen
+    for j = 1:slen
       ckwargs = Dict()
       for k in typeof(carrier).names
         ckwargs[k] = k != :len ? carrier.(k) : sprlen[j] 
@@ -159,9 +160,15 @@ function uturunichannelcsk_gen_sys(ebn0db::Ranges{Float64}, sprlen::Ranges{Int};
   return systems
 end
 
-function sim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64)
+function sim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64; verbose::Bool=false)
   slen = length(s)
   nbiterrors, ndecfails, bers = Array(Int64, slen), Array(Int64, slen), Array(Float64, slen)
+  local meter
+
+  if verbose
+    println("Execution started at ", now(), "\n\nSimulating BER...")
+    meter = ProgressMeter.Progress(slen, "  ")
+  end
 
   for i = 1:slen
     try
@@ -169,14 +176,24 @@ function sim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64)
     catch
       nbiterrors[i] = ndecfails[i] = bers[i] = NaN
     end
+
+    if verbose; ProgressMeter.next!(meter); end
   end
+
+  if verbose; println("\nExecution completed at ", now()); end
 
   return nbiterrors, ndecfails, bers
 end
 
-function sim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64)
+function sim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64; verbose::Bool=false)
   nrows, ncols = size(s)
   nbiterrors, ndecfails, bers = Array(Int64, nrows, ncols), Array(Int64, nrows, ncols), Array(Float64, nrows, ncols)
+  local meter
+
+  if verbose
+    println("Execution started at ", now(), "\n\nSimulating BER...")
+    meter = ProgressMeter.Progress(nrows*ncols, "  ")
+  end
 
   for i = 1:nrows
     for j = 1:ncols
@@ -185,15 +202,25 @@ function sim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64)
       catch
         nbiterrors[i, j] = ndecfails[i, j] = bers[i, j] = NaN
       end
+
+      if verbose; ProgressMeter.next!(meter); end
     end
   end
+
+  if verbose; println("\nExecution completed at ", now()); end
 
   return nbiterrors, ndecfails, bers
 end
 
-function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pmap)
+function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pmap, verbose::Bool=false)
   slen = length(s)
   nbiterrors, ndecfails, bers = Array(Int64, slen), Array(Int64, slen), Array(Float64, slen)
+  local meter
+
+  if verbose
+    println("Execution started at ", now(), "\n\nSimulating BER...")
+    meter = ProgressMeter.Progress(slen, "  ")
+  end
 
   for i = 1:slen
     try
@@ -201,14 +228,24 @@ function psim_ber(s::Vector{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbo
     catch
       nbiterrors[i] = ndecfails[i] = bers[i] = NaN
     end
+
+    if verbose; ProgressMeter.next!(meter); end
   end
+
+  if verbose; println("\nExecution completed at ", now()); end
 
   return nbiterrors, ndecfails, bers
 end
 
-function psim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pmap)
+function psim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbol=:pmap, verbose::Bool=false)
   nrows, ncols = size(s)
   nbiterrors, ndecfails, bers = Array(Int64, nrows, ncols), Array(Int64, nrows, ncols), Array(Float64, nrows, ncols)
+  local meter
+
+  if verbose
+    println("Execution started at ", now(), "\n\nSimulating BER...")
+    meter = ProgressMeter.Progress(nrows*ncols, "  ")
+  end
 
   for i = 1:nrows
     for j = 1:ncols
@@ -217,8 +254,12 @@ function psim_ber(s::Matrix{UTURUniChannelCSK}, bit::Int, n::Int64; ptype::Symbo
       catch
         nbiterrors[i, j] = ndecfails[i, j] = bers[i, j] = NaN
       end
+
+      if verbose; ProgressMeter.next!(meter); end
     end
   end
+
+  if verbose; println("\nExecution completed at ", now()); end
 
   return nbiterrors, ndecfails, bers
 end

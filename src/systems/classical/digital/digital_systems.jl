@@ -33,26 +33,44 @@ function sim_ber(s::DigitalSystem, bit::Int, n::Int64)
   nbiterrors, ndecfails, nbiterrors/(n-ndecfails)
 end
 
-function sim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64)
+function sim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64; verbose::Bool=false)
   slen = length(s)
   output = cell(slen)
+  local meter
+
+  if verbose
+    println("Execution started at ", now(), "\n\nSimulating BER...")
+    meter = ProgressMeter.Progress(slen, "  ")
+  end
 
   for i = 1:slen
     output[i] = sim_ber(s[i], bit, n)
+    if verbose; ProgressMeter.next!(meter); end
   end
+
+  if verbose; println("\nExecution completed at ", now()); end
 
   return output
 end
 
-function sim_ber{T<:DigitalSystem}(s::Matrix{T}, bit::Int, n::Int64)
+function sim_ber{T<:DigitalSystem}(s::Matrix{T}, bit::Int, n::Int64; verbose::Bool=false)
   nrows, ncols = size(s)
   output = cell(nrows, ncols)
+  local meter
+
+  if verbose
+    println("Execution started at ", now(), "\n\nSimulating BER...")
+    meter = ProgressMeter.Progress(nrows*ncols, "  ")
+  end
 
   for i = 1:nrows
     for j = 1:ncols
       output[i, j] = sim_ber(s[i, j], bit, n)
+      if verbose; ProgressMeter.next!(meter); end
     end
   end
+
+  if verbose; println("\nExecution completed at ", now()); end
 
   return output
 end
@@ -97,26 +115,44 @@ function psim_ber(s::DigitalSystem, bit::Int, n::Int64; ptype::Symbol=:pmap)
   end
 end
 
-function psim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64; ptype::Symbol=:pmap)
+function psim_ber{T<:DigitalSystem}(s::Vector{T}, bit::Int, n::Int64; ptype::Symbol=:pmap, verbose::Bool=false)
   slen = length(s)
   output = cell(slen)
+  local meter
+
+  if verbose
+    println("Execution started at ", now(), "\n\nSimulating BER...")
+    meter = ProgressMeter.Progress(slen, "  ")
+  end
 
   for i = 1:slen
     output[i] = psim_ber(s[i], bit, n; ptype=ptype)
+    if verbose; ProgressMeter.next!(meter); end
   end
+
+  if verbose; println("\nExecution completed at ", now()); end
 
   return output
 end
 
-function psim_ber{T<:DigitalSystem}(s::Matrix{T}, bit::Int, n::Int64; ptype::Symbol=:pmap)
+function psim_ber{T<:DigitalSystem}(s::Matrix{T}, bit::Int, n::Int64; ptype::Symbol=:pmap, verbose::Bool=false)
   nrows, ncols = size(s)
   output = cell(nrows, ncols)
+  local meter
+
+  if verbose
+    println("Execution started at ", now(), "\n\nSimulating BER...")
+    meter = ProgressMeter.Progress(nrows*ncols, "  ")
+  end
 
   for i = 1:nrows
     for j = 1:ncols
       output[i, j] = psim_ber(s[i, j], bit, n; ptype=ptype)
+      if verbose; ProgressMeter.next!(meter); end
     end
   end
+
+  if verbose; println("\nExecution completed at ", now()); end
 
   return output
 end

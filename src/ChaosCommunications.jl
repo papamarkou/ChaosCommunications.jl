@@ -4,8 +4,10 @@ using NumericExtensions
 using Distributions
 using StatsBase
 using NLopt
+using Datetime
+using ProgressMeter
 
-import Base.mean, Base.var, Base.rand
+import Base.convert, Base.mean, Base.var, Base.rand
 import Distributions.log2π, Distributions.@continuous_distr_support
 
 export
