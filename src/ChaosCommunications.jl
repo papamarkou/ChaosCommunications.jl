@@ -4,7 +4,7 @@ using NumericExtensions
 using Distributions
 using StatsBase
 using NLopt
-using Datetime
+using Dates
 using ProgressMeter
 
 import Base.convert, Base.mean, Base.var, Base.rand
