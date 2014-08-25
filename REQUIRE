@@ -3,5 +3,5 @@ NumericExtensions
 Distributions
 StatsBase
 NLopt
-Datetime
+Dates
 ProgressMeter
